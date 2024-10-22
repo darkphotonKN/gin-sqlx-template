@@ -15,17 +15,14 @@ func NewUserRepository(db *sqlx.DB) *UserRepository {
 	}
 }
 
-func (r *UserRepository) Create(user models.User) (models.User, error) {
-	query := `INSERT INTO users (email, password, created_at, updated_at) 
-              VALUES ($1, $2, $3, $4) RETURNING id`
+func (r *UserRepository) Create(user models.User) error {
+	query := `INSERT INTO users (name, email, password) VALUES (:name, :email, :password)`
 
-	var createdUser models.User
-	err := r.DB.Get(&createdUser, query, user.Email, user.Password)
+	_, err := r.DB.NamedExec(query, user)
 
 	if err != nil {
-		return models.User{}, err
+		return err
 	}
 
-	return createdUser, nil
-
+	return nil
 }

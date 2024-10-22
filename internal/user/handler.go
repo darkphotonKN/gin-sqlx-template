@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/darkphotonKN/gin-sqlx-template/internal/models"
@@ -25,12 +26,12 @@ func (h *UserHandler) CreateUserHandler(c *gin.Context) {
 		return
 	}
 
-	createdUser, err := h.Service.CreateUserService(user)
+	err := h.Service.CreateUserService(user)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error when attempting to create user: %s", err.Error())})
 		return
 	}
 
-	c.JSON(http.StatusCreated, createdUser)
+	c.JSON(http.StatusCreated, gin.H{"statusCode:": http.StatusCreated, "message": "Successfully created user."})
 }

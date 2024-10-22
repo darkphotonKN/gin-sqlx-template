@@ -41,6 +41,12 @@ func InitDB() *sqlx.DB {
 	}
 	fmt.Println("Connected to the database successfully.")
 
+	// install UUID extension
+	SetupUUIDExtension(db)
+
+	// run migrations
+	RunMigrations(db)
+
 	// set global instance for the database
 	DB = db
 	return DB

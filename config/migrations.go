@@ -6,16 +6,28 @@ import (
 )
 
 /**
+* Installs and uses uuid extension for *postgres*.
+**/
+func SetupUUIDExtension(db *sqlx.DB) {
+	query := `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
+
+	_, err := db.Exec(query)
+	if err != nil {
+		log.Fatalf("Failed to create uuid-ossp extension: %v", err)
+	}
+	log.Println("UUID extension setup completed.")
+}
+
+/**
 * Sets up all migration steps for all tables.
 **/
 func RunMigrations(db *sqlx.DB) {
 	query := `
-	 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-	
     CREATE TABLE IF NOT EXISTS users (
         id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
         name TEXT NOT NULL,
         email TEXT UNIQUE NOT NULL,
+				password TEXT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
