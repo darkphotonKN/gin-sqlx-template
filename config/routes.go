@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/darkphotonKN/gin-sqlx-template/internal/booking"
 	"github.com/darkphotonKN/gin-sqlx-template/internal/user"
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +15,7 @@ func SetupRouter() *gin.Engine {
 	// base route
 	api := router.Group("/api")
 
-	// -- User --
+	// -- USER --
 
 	// --- User Setup ---
 	userRepo := user.NewUserRepository(DB)
@@ -25,6 +26,18 @@ func SetupRouter() *gin.Engine {
 	userRoutes := api.Group("/user")
 	userRoutes.GET("/:id", userHandler.GetUserByIdHandler)
 	userRoutes.POST("/", userHandler.CreateUserHandler)
+
+	// -- BOOKING --
+
+	// --- Booking Setup ---
+	bookingRepo := booking.NewBookingRepository(DB)
+	bookingService := booking.NewBookingService(bookingRepo)
+	bookingHandler := booking.NewBookingHandler(bookingService)
+
+	// ---  Booking Routes ---
+	bookingRoutes := api.Group("/booking")
+	bookingRoutes.POST("/:user_id", bookingHandler.CreateBookingHandler)
+	bookingRoutes.GET("/:id", bookingHandler.GetBookingByIdHandler)
 
 	return router
 }

@@ -15,11 +15,36 @@ type User struct {
 	Password string `db:"password" json:"password,omitempty"`
 }
 
+type Booking struct {
+	BaseDBUserDateModel
+	// FK to User, One to Many Relation
+	UserID    uuid.UUID `db:"user_id" json:"userId"`
+	Status    string    `db:"status" json:"status"`
+	StartDate time.Time `db:"start_date" json:"startDate"`
+	EndDate   time.Time `db:"end_date" json:"endDate"`
+}
+
 /**
 * Base models for default table columns.
 **/
+
+type BaseDBUserDateModel struct {
+	BaseDBModel
+	BaseDBUserModel
+	BaseDBTimeModel
+}
+
+type BaseDBUserModel struct {
+	UpdatedUser uuid.UUID `db:"updated_user" json:"updatedUser"`
+	CreatedUser uuid.UUID `db:"created_user" json:"createdUser"`
+}
+
 type BaseDBDateModel struct {
 	BaseDBModel
+	BaseDBTimeModel
+}
+
+type BaseDBTimeModel struct {
 	CreatedAt time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
 }
