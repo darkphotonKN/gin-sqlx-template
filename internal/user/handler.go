@@ -6,6 +6,7 @@ import (
 
 	"github.com/darkphotonKN/gin-sqlx-template/internal/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -29,9 +30,36 @@ func (h *UserHandler) CreateUserHandler(c *gin.Context) {
 	err := h.Service.CreateUserService(user)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error when attempting to create user: %s", err.Error())})
+		c.JSON(http.StatusInternalServerError, gin.H{"statusCode:": http.StatusInternalServerError, "message": fmt.Sprintf("Error when attempting to create user: %s", err.Error())})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"statusCode:": http.StatusCreated, "message": "Successfully created user."})
+}
+
+func (h *UserHandler) GetUserByIdHandler(c *gin.Context) {
+	// get id from param
+	idParam := c.Param("id")
+
+	// check that its a valid uuid
+	id, err := uuid.Parse(idParam)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"statusCode:": http.StatusBadRequest, "message": fmt.Sprintf("Error with id %d, not a valid uuid.", id)})
+		// return to stop flow of function after error response
+		return
+	}
+
+	user, err := h.Service.GetUserByIdService(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"statusCode:": http.StatusBadRequest, "message": fmt.Sprintf("Error when attempting to get user with id %d %s", id, err.Error())})
+
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"statusCode:": http.StatusOK, "message": "Successfully retrived user.",
+		// de-reference to return the user struct, not pointer
+		"result": *user})
+
 }

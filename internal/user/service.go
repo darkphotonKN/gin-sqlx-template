@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/darkphotonKN/gin-sqlx-template/internal/models"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,6 +16,10 @@ func NewUserService(repo *UserRepository) *UserService {
 	return &UserService{
 		Repo: repo,
 	}
+}
+
+func (s *UserService) GetUserByIdService(id uuid.UUID) (*models.User, error) {
+	return s.Repo.GetById(id)
 }
 
 func (s *UserService) CreateUserService(user models.User) error {

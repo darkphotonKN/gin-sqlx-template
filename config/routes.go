@@ -23,6 +23,7 @@ func SetupRouter() *gin.Engine {
 
 	// --- User Routes ---
 	userRoutes := api.Group("/user")
+	userRoutes.GET("/:id", userHandler.GetUserByIdHandler)
 	userRoutes.POST("/", userHandler.CreateUserHandler)
 
 	return router
