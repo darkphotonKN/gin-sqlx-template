@@ -2,17 +2,24 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/jmoiron/sqlx"
+
 	// Importing for side effects - Dont Remove
 	// This IS being used!
-	_ "github.com/lib/pq"
 	"log"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 // NOTE: for global db access, do not remove or move inside a function
 var DB *sqlx.DB
 
+/**
+* Sets up the Database connection and provides its access as a singleton to
+* the entire application.
+**/
 func InitDB() *sqlx.DB {
 
 	// construct the db connection string
@@ -34,7 +41,7 @@ func InitDB() *sqlx.DB {
 	}
 	fmt.Println("Connected to the database successfully.")
 
-	// set global singleton instance for the database
+	// set global instance for the database
 	DB = db
 	return DB
 }

@@ -1,15 +1,25 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"os"
 
 	"github.com/darkphotonKN/gin-sqlx-template/config"
+	"github.com/joho/godotenv"
 )
 
-// main entry point to app
+/**
+* Main entry point to entire application.
+* NOTE: Keep code here as clean and little as possible.
+**/
 func main() {
+	// env setup
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system environment variables")
+	}
 
-	// db setup
+	// database setup
 	db := config.InitDB()
 	defer db.Close()
 
@@ -23,6 +33,6 @@ func main() {
 		port = defaultDevPort
 	}
 
-	// run server listener
-	router.Run(port)
+	// starts server and listen on port
+	router.Run(fmt.Sprintf(":%s", port)) // port = ":" + PORT
 }
