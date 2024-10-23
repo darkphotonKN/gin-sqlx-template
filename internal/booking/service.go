@@ -15,9 +15,8 @@ func NewBookingService(repo *BookingRepository) *BookingService {
 	}
 }
 
-func (s *BookingService) GetBookingByIdService(id uuid.UUID) (*models.Booking, error) {
-	// return s.Repo.GetById(id)
-	return &models.Booking{}, nil
+func (s *BookingService) GetBookingByIdService(userId uuid.UUID, id uuid.UUID) (*models.Booking, error) {
+	return s.Repo.GetById(userId, id)
 }
 
 func (s *BookingService) CreateBookingService(userId uuid.UUID, req CreateBookingRequest) error {

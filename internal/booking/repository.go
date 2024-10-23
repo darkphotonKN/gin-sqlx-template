@@ -37,6 +37,27 @@ func (r *BookingRepository) Create(userId uuid.UUID, req CreateBookingRequest) e
 	return nil
 }
 
-func (r *BookingRepository) GetById(id uuid.UUID) (*models.Booking, error) {
-	return &models.Booking{}, nil
+func (r *BookingRepository) GetById(userId uuid.UUID, id uuid.UUID) (*models.Booking, error) {
+
+	// One to Many example
+	query := `
+	SELECT 
+		bookings.id,
+		bookings.start_date,
+		bookings.end_date,
+		bookings.status
+	FROM bookings
+	JOIN users ON users.id = bookings.user_id
+	WHERE bookings.id = $1 AND bookings.user_id = $2
+	`
+
+	var booking models.Booking
+
+	err := r.DB.Get(&booking, query, id, userId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &booking, nil
 }

@@ -58,7 +58,7 @@ func (h *UserHandler) GetUserByIdHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"statusCode:": http.StatusOK, "message": "Successfully retrived user.",
+	c.JSON(http.StatusOK, gin.H{"statusCode:": http.StatusOK, "message": "Successfully retrived user.",
 		// de-reference to return the user struct, not pointer
 		"result": *user})
 
