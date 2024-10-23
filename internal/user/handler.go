@@ -63,3 +63,15 @@ func (h *UserHandler) GetUserByIdHandler(c *gin.Context) {
 		"result": *user})
 
 }
+
+func (h *UserHandler) GetAllUsersHandler(c *gin.Context) {
+	users, err := h.Service.GetAllUsersService()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"statusCode:": http.StatusBadRequest, "message": fmt.Sprintf("Error when attempting to get all users: Error:\n", err.Error())})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"statusCode:": http.StatusOK, "message": "Successfully retrieved users.", "result": users})
+}

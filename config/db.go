@@ -39,13 +39,8 @@ func InitDB() *sqlx.DB {
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
+
 	fmt.Println("Connected to the database successfully.")
-
-	// install UUID extension
-	SetupUUIDExtension(db)
-
-	// run migrations
-	RunMigrations(db)
 
 	// set global instance for the database
 	DB = db

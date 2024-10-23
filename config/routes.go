@@ -26,6 +26,7 @@ func SetupRouter() *gin.Engine {
 	userRoutes := api.Group("/user")
 	userRoutes.GET("/:id", userHandler.GetUserByIdHandler)
 	userRoutes.POST("/", userHandler.CreateUserHandler)
+	userRoutes.GET("/", userHandler.GetAllUsersHandler)
 
 	// -- BOOKING --
 

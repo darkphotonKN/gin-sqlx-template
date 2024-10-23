@@ -28,27 +28,22 @@ type Booking struct {
 * Base models for default table columns.
 **/
 
-type BaseDBUserDateModel struct {
-	BaseDBModel
-	BaseDBUserModel
-	BaseDBTimeModel
-}
-
 type BaseDBUserModel struct {
+	ID          uuid.UUID `db:"id" json:"id"`
 	UpdatedUser uuid.UUID `db:"updated_user" json:"updatedUser"`
 	CreatedUser uuid.UUID `db:"created_user" json:"createdUser"`
 }
 
-type BaseDBDateModel struct {
-	BaseDBModel
-	BaseDBTimeModel
+type BaseDBUserDateModel struct {
+	ID          uuid.UUID `db:"id" json:"id"`
+	UpdatedUser uuid.UUID `db:"updated_user" json:"updatedUser"`
+	CreatedUser uuid.UUID `db:"created_user" json:"createdUser"`
+	CreatedAt   time.Time `db:"created_at" json:"created_at"`
+	UpdatedAt   time.Time `db:"updated_at" json:"updated_at"`
 }
 
-type BaseDBTimeModel struct {
+type BaseDBDateModel struct {
+	ID        uuid.UUID `db:"id" json:"id"`
 	CreatedAt time.Time `db:"created_at" json:"created_at"`
 	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
-}
-
-type BaseDBModel struct {
-	ID uuid.UUID `db:"id" json:"id"`
 }

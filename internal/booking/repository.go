@@ -1,6 +1,8 @@
 package booking
 
 import (
+	"fmt"
+
 	"github.com/darkphotonKN/gin-sqlx-template/internal/models"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
@@ -17,7 +19,6 @@ func NewBookingRepository(db *sqlx.DB) *BookingRepository {
 }
 
 func (r *BookingRepository) Create(userId uuid.UUID, req CreateBookingRequest) error {
-
 	query := `INSERT INTO bookings(user_id, start_date, end_date, status) VALUES (:userId, :startDate, :endDate, :status)`
 
 	// create fields required for DB insert
@@ -27,6 +28,8 @@ func (r *BookingRepository) Create(userId uuid.UUID, req CreateBookingRequest) e
 		"endDate":   req.EndDate,
 		"status":    req.Status,
 	}
+
+	fmt.Printf("fields: %+v", fields)
 
 	_, err := r.DB.NamedExec(query, fields)
 
@@ -38,7 +41,6 @@ func (r *BookingRepository) Create(userId uuid.UUID, req CreateBookingRequest) e
 }
 
 func (r *BookingRepository) GetById(userId uuid.UUID, id uuid.UUID) (*models.Booking, error) {
-
 	// One to Many example
 	query := `
 	SELECT 

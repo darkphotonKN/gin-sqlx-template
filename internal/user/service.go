@@ -44,3 +44,7 @@ func (s *UserService) HashPassword(password string) (string, error) {
 	}
 	return string(hash), nil
 }
+
+func (s *UserService) GetAllUsersService() ([]GetAllUsersReq, error) {
+	return s.Repo.GetAll()
+}
