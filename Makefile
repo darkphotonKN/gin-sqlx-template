@@ -32,4 +32,22 @@ migrate-down:
 migrate-status:
 	@goose -dir ./migrations postgres "$(DB_STRING)" status
 
+migrate-down-to:
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Usage: make migrate-down-to VERSION=<version>"; \
+		exit 1; \
+	fi; \
+	goose -dir ./migrations postgres "$(DB_STRING)" down-to $(VERSION)
+
+migrate-reset:
+	@goose -dir ./migrations postgres "$(DB_STRING)" reset
+
 .PHONY: run test migrate-up migrate-down migrate-status
+
+
+
+
+
+
+
+

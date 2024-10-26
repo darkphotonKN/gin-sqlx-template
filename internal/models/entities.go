@@ -27,7 +27,6 @@ type Booking struct {
 /**
 * Base models for default table columns.
 **/
-
 type BaseDBUserModel struct {
 	ID          uuid.UUID `db:"id" json:"id"`
 	UpdatedUser uuid.UUID `db:"updated_user" json:"updatedUser"`

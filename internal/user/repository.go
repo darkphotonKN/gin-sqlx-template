@@ -48,24 +48,35 @@ func (r *UserRepository) GetById(id uuid.UUID) (*models.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) GetAll() ([]GetAllUsersReq, error) {
+func (r *UserRepository) GetAll() ([]*UserResponse, error) {
 	query := `
 	SELECT 
 		users.id,
 		users.name,
-		users.email
+		users.email,
+		users.created_at,
+		users.updated_at,
+		bookings.id as booking_id,
+		bookings.start_date,
+		bookings.end_date,
+		bookings.status,
+		bookings.created_at as booking_created_at,
+		bookings.updated_at as booking_updated_at
 	FROM users 
 	LEFT JOIN bookings ON bookings.user_id = users.id
 	`
 
+	// temporary struct to hold flat information
 	var results []struct {
 		models.BaseDBDateModel
-		Name      string     `db:"name"`
-		Email     string     `db:"email"`
-		BookingID *uuid.UUID `db:"booking_id"`
-		StartDate *time.Time `db:"start_date"`
-		EndDate   *time.Time `db:"end_date"`
-		Status    *string    `db:"status"`
+		Name             string     `db:"name"`
+		Email            string     `db:"email"`
+		BookingID        *uuid.UUID `db:"booking_id"`
+		StartDate        *time.Time `db:"start_date"`
+		EndDate          *time.Time `db:"end_date"`
+		Status           *string    `db:"status"`
+		BookingCreatedAt *time.Time `db:"booking_created_at"`
+		BookingUpdatedAt *time.Time `db:"booking_updated_at"`
 	}
 
 	if err := r.DB.Select(&results, query); err != nil {
@@ -75,16 +86,16 @@ func (r *UserRepository) GetAll() ([]GetAllUsersReq, error) {
 	fmt.Printf("Results: %+v\n", results)
 
 	// map to hold each user
-	resultsMap := make(map[uuid.UUID]GetAllUsersReq)
+	usersMap := make(map[uuid.UUID]*UserResponse)
 
 	// loop and inject all the related bookings
 	for _, row := range results {
-		var user, exists = resultsMap[row.ID]
+		var user, exists = usersMap[row.ID]
 
 		// check if user exists
 		if !exists {
 			// create index with user
-			user = GetAllUsersReq{
+			user = &UserResponse{
 				BaseDBDateModel: models.BaseDBDateModel{
 					ID:        row.ID,
 					CreatedAt: row.CreatedAt,
@@ -94,28 +105,36 @@ func (r *UserRepository) GetAll() ([]GetAllUsersReq, error) {
 				Email:    row.Email,
 				Bookings: []models.Booking{},
 			}
+			usersMap[row.ID] = user
 		}
 
 		// otherwise we just append to the bookings
 		if row.BookingID != nil {
 			user.Bookings = append(user.Bookings, models.Booking{
 				BaseDBUserDateModel: models.BaseDBUserDateModel{
-					ID: *row.BookingID,
+					ID:        *row.BookingID,
+					CreatedAt: *row.BookingCreatedAt,
+					UpdatedAt: *row.BookingUpdatedAt,
 				},
+				UserID:    row.ID,
 				Status:    *row.Status,
 				StartDate: *row.StartDate,
 				EndDate:   *row.EndDate,
 			})
 		}
+
+		usersMap[row.ID] = user
 	}
+
+	fmt.Println("usersMap:", usersMap)
 
 	// convert back to array
-	users := make([]GetAllUsersReq, len(resultsMap))
-	for _, user := range resultsMap {
-		users = append(users, user)
+	usersResponse := make([]*UserResponse, 0, len(usersMap))
+	for _, user := range usersMap {
+		usersResponse = append(usersResponse, user)
 	}
 
-	fmt.Printf("users after map: %+v\n", users)
+	fmt.Printf("usersResponse after map: %+v\n", usersResponse)
 
-	return users, nil
+	return usersResponse, nil
 }

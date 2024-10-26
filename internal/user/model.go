@@ -2,7 +2,7 @@ package user
 
 import "github.com/darkphotonKN/gin-sqlx-template/internal/models"
 
-type GetAllUsersReq struct {
+type UserResponse struct {
 	models.BaseDBDateModel
 	Email    string           `db:"email" json:"email"`
 	Name     string           `db:"name" json:"name"`
