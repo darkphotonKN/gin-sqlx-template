@@ -4,12 +4,11 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-
-	// Importing for side effects - Dont Remove
-	// This IS being used!
 	"log"
 	"os"
 
+	// Importing for side effects - Dont Remove
+	// This IS being used!
 	_ "github.com/lib/pq"
 )
 
