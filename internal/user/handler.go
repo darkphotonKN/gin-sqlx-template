@@ -76,3 +76,26 @@ func (h *UserHandler) GetAllUsersHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"statusCode:": http.StatusOK, "message": "Successfully retrieved users.", "result": users})
 }
+
+func (h *UserHandler) LoginUserHandler(c *gin.Context) {
+	var loginReq UserLoginRequest
+
+	err := c.ShouldBindJSON(&loginReq)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"statusCode": http.StatusBadRequest, "message": fmt.Sprintf("Error when unmarshalling json payload: %s\n", err)})
+		return
+	}
+
+	user, err := h.Service.LoginUserService(loginReq)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"statusCode": http.StatusBadRequest, "message": fmt.Sprintf("Error when attempting to login user: %s\n", err)})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"statusCode": http.StatusOK, "message": "Successfully logged in.",
+		// TODO : Add jwt tokens.
+		// de-reference to return the user struct, not pointer
+		"result": user})
+}
